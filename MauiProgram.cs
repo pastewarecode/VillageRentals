@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using VillageRentals.Components.Controller;
 
 namespace VillageRentals
 {
@@ -7,6 +9,7 @@ namespace VillageRentals
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
+
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
@@ -16,8 +19,9 @@ namespace VillageRentals
 
             builder.Services.AddMauiBlazorWebView();
 
+            builder.Services.AddSingleton<ClientController>();
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
 
