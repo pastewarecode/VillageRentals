@@ -16,12 +16,15 @@ namespace VillageRentals.Components.Models
         private DateTime? _returnDate;
         private decimal _cost;
 
+        public List<RentalItem> rentalItems { get; set; }
+
         public Rental(int id, DateTime date, Customer customer, DateTime? returnDate = null)
         {
             _id = id;
             _date = date;
             _customer = customer;
             _returnDate = returnDate;
+            rentalItems = new List<RentalItem>();
         }
 
         public int Id

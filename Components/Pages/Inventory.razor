@@ -1,0 +1,72 @@
+﻿@page "/inventory"
+@using VillageRentals.Components.Controller
+@using VillageRentals.Components.Models
+@inject InventoryController InventoryController
+
+<h3>Inventory Management</h3>
+
+<!-- Form that allows user to add equipment. They imput info and submit. Then inventory controller will add to list -->
+<EditForm Model="newEquipment" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="name">Equipment Name</label>
+        <InputText id="name" @bind-Value="newEquipment.Name" style="margin-bottom: 8px" />
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <InputText id="description" @bind-Value="newEquipment.Description" style="margin-bottom: 8px" />
+    </div>
+    <div>
+        <label for="dailyRate">Daily Rate $</label>
+        <InputNumber id="dailyRate" @bind-Value="newEquipment.DailyRate" style="margin-bottom: 8px" />
+    </div>
+
+    <button type="submit">Add Equipment</button>
+</EditForm>
+
+<!-- Displays inventory list -->
+<h4>Display Inventory</h4>
+<ul>
+    @foreach (var equipment in equipmentList)
+    {
+        <li>
+            Item: @equipment.Name | Description: @equipment.Description | Daily Rate: @equipment.DailyRate
+            <button @onclick="() => RemoveEquipment(equipment.Id)">Remove</button>
+        </li>
+    }
+</ul>
+
+
+@code {
+    private Equipment newEquipment = new Equipment(0, "", "", 0);
+    private List<Equipment> equipmentList;
+
+    protected override void OnInitialized()
+    {
+        equipmentList = InventoryController.GetAllEquipment();
+    }
+
+    private void HandleValidSubmit()
+    {
+        //method to add equipment
+        InventoryController.AddEquipment(newEquipment.Name, newEquipment.Description, newEquipment.DailyRate);
+
+        //refreshes list
+        equipmentList = InventoryController.GetAllEquipment();
+
+        //resets equipment
+        newEquipment = new Equipment(0, "", "", 0);
+    }
+
+    private void RemoveEquipment(int id)
+    {
+        //deletes the selected equipment
+        InventoryController.DeleteEquipment(id);
+
+        //refreshes list
+        equipmentList = InventoryController.GetAllEquipment();
+    }
+}
+

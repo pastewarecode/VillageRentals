@@ -10,7 +10,7 @@ namespace VillageRentals.Components.Models
     {
         private string _note;
 
-        public Customer(int id, string firstName, string lastName, string phone, string email, string note)
+        public Customer(int id, string firstName, string lastName, string phone, string email, string? note)
             : base(id, firstName, lastName, phone, email)
         {
             _note = note;

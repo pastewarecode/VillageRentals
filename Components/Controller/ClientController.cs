@@ -1,15 +1,19 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using VillageRentals.Components.Models;
+
 
 namespace VillageRentals.Components.Controller
 {
     public class ClientController
     {
         private List<Customer> customerList = new List<Customer>();
+
 
         public void AddClient(string firstName, string lastName, string phone, string email, string note = "")
         {

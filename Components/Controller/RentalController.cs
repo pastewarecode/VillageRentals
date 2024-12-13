@@ -7,7 +7,7 @@ using VillageRentals.Components.Models;
 
 namespace VillageRentals.Components.Controller
 {
-    public class RentalService
+    public class RentalController
     {
         private List<Rental> rentalList = new List<Rental>();
 
@@ -18,6 +18,12 @@ namespace VillageRentals.Components.Controller
 
 
             rentalList.Add(rental);
+        }
+
+
+        public List<Rental> GetAllRentals()
+        {
+            return rentalList;
         }
 
         private int GenerateNewId()

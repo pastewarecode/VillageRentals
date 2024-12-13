@@ -20,6 +20,9 @@ namespace VillageRentals
             builder.Services.AddMauiBlazorWebView();
 
             builder.Services.AddSingleton<ClientController>();
+            builder.Services.AddSingleton<InventoryController>();
+            builder.Services.AddSingleton<RentalController>();
+
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();

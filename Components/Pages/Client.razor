@@ -11,34 +11,36 @@
     <ValidationSummary />
 
     <div>
-        <label for="firstName">First Name</label>
-        <InputText id="firstName" @bind-Value="newCustomer.FirstName" />
-    </div>
-    <div>
-        <label for="lastName">Last Name</label>
-        <InputText id="lastName" @bind-Value="newCustomer.LastName" />
-    </div>
-    <div>
-        <label for="phone">Phone</label>
-        <InputText id="phone" @bind-Value="newCustomer.Phone" />
-    </div>
-    <div>
-        <label for="email">Email</label>
-        <InputText id="email" @bind-Value="newCustomer.Email" />
-    </div>
-    <div>
-        <label for="note">Note</label>
-        <InputText id="note" @bind-Value="newCustomer.Note" />
-    </div>
+        <div>
+            <label for="firstName">First Name</label>
+            <InputText id="firstName" @bind-Value="newCustomer.FirstName" style="margin-bottom: 8px" />
+        </div>
+        <div>
+            <label for="lastName">Last Name</label>
+            <InputText id="lastName" @bind-Value="newCustomer.LastName" style="margin-bottom: 8px" />
+        </div>
+        <div>
+            <label for="phone">Phone</label>
+            <InputText id="phone" @bind-Value="newCustomer.Phone" style="margin-bottom: 8px" />
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <InputText id="email" @bind-Value="newCustomer.Email" style="margin-bottom: 8px" />
+        </div>
+        <div>
+            <label for="note">Note</label>
+            <InputText id="note" @bind-Value="newCustomer.Note" style="margin-bottom: 8px" />
+        </div>
 
-    <button type="submit">Add Client</button>
+        <button type="submit">Add Client</button>
+    </div>
 </EditForm>
 
-<h4>All Clients</h4>
+<h4>Display Clients</h4>
 <ul>
     @foreach (var customer in customers)
     {
-        <li>@customer.FirstName @customer.LastName</li>
+        <li>Client Name: "@customer.FirstName @customer.LastName" | Information - Phone:"@customer.Phone" - Email:"@customer.Email" - Note:"@customer.Note"</li>
     }
 </ul>
 
@@ -46,9 +48,10 @@
     private Customer newCustomer = new Customer(0, "", "", "", "", "");
     private List<Customer> customers;
 
+
     protected override void OnInitialized()
     {
-        //When the page appears, ALL customers(clients) will appear for the user.
+        //when the page appears, ALL customers(clients) will appear for the user.
         customers = ClientController.GetAllClients();
     }
 
@@ -57,7 +60,7 @@
         //addclient method
         ClientController.AddClient(newCustomer.FirstName, newCustomer.LastName, newCustomer.Phone, newCustomer.Email, newCustomer.Note);
 
-        //Display client method
+        //display client method
         customers = ClientController.GetAllClients();
 
         //reset the customers

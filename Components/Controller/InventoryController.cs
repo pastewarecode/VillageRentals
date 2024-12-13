@@ -7,11 +7,11 @@ using VillageRentals.Components.Models;
 
 namespace VillageRentals.Components.Controller
 {
-    public class EquipmentController
+    public class InventoryController
     {
         private List<Equipment> equipmentList = new List<Equipment>();
 
-        public void AddEquipment(string name, string description, decimal dailyRentalCost, string category)
+        public void AddEquipment(string name, string description, decimal dailyRentalCost)
         {
             var equipment = new Equipment(GenerateNewId(), name, description, dailyRentalCost);
             equipmentList.Add(equipment);

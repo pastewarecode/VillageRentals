@@ -1,0 +1,110 @@
+﻿@page "/rentals"
+@using VillageRentals.Components.Controller
+@using VillageRentals.Components.Models
+@inject RentalController RentalController
+@inject ClientController ClientController
+@inject InventoryController InventoryController
+
+<h3>Rental Management</h3>
+
+<!-- Form that allows a user to add a rental -->
+<EditForm Model="newRentalInfo" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="customerId">Select Client</label>
+        <InputSelect id="customerId" @bind-Value="newRentalInfo.CustomerId" style="margin-bottom: 8px">
+            <option value="">-- Select Client --</option>
+            @foreach (var client in customers)
+            {
+                <option value="@client.Id">@client.FirstName @client.LastName</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div>
+        <label for="equipmentId">Select Equipment</label>
+        <InputSelect id="equipmentId" @bind-Value="newRentalInfo.EquipmentId" style="margin-bottom: 8px">
+            <option value="">-- Select Equipment --</option>
+            @foreach (var equipment in equipmentList)
+            {
+                <option value="@equipment.Id">@equipment.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div>
+        <label for="rentalDate">Rental Date</label>
+        <InputDate id="rentalDate" @bind-Value="newRentalInfo.RentalDate" style="margin-bottom: 8px" />
+    </div>
+
+    <div>
+        <label for="returnDate">Return Date</label>
+        <InputDate id="returnDate" @bind-Value="newRentalInfo.ReturnDate" style="margin-bottom: 8px" />
+    </div>
+
+    <div>
+        <label for="cost">Cost</label>
+        <InputNumber id="cost" @bind-Value="newRentalInfo.Cost" style="margin-bottom: 8px" />
+    </div>
+
+    <button type="submit">Process Rental</button>
+</EditForm>
+
+<!-- Lists the existing rentals -->
+<h4>Existing Rentals</h4>
+<ul>
+    @foreach (var rental in rentals)
+    {
+        <li>
+            Rental ID: @rental.Id | Client: @rental.Customer.FirstName @rental.Customer.LastName |
+            Equipment: @string.Join(", ", rental.rentalItems.Select(ri => ri.Item.Name)) |
+            Rented On: @(rental.rentalItems.FirstOrDefault()?.RentalDate.ToShortDateString() ?? "N/A") |
+            Cost: @rental.rentalItems.Sum(ri => ri.Cost) |
+            Due On: @(rental.rentalItems.FirstOrDefault()?.ReturnDate?.ToShortDateString() ?? "N/A")
+        </li>
+    }
+</ul>
+
+@code {
+    private List<Rental> rentals;
+    private List<Customer> customers;
+    private List<Equipment> equipmentList;
+
+    private NewRentalInfo newRentalInfo = new NewRentalInfo();
+
+    protected override void OnInitialized()
+    {
+        customers = ClientController.GetAllClients();
+        equipmentList = InventoryController.GetAllEquipment();
+        rentals = RentalController.GetAllRentals();
+    }
+
+    private void HandleValidSubmit()
+    {
+        var customer = customers.FirstOrDefault(c => c.Id == newRentalInfo.CustomerId);
+        var equipment = equipmentList.FirstOrDefault(e => e.Id == newRentalInfo.EquipmentId);
+
+        if (customer != null && equipment != null)
+        {
+            RentalController.ProcessRental(customer, equipment, newRentalInfo.RentalDate, newRentalInfo.ReturnDate, newRentalInfo.Cost);
+        }
+
+        //refreshes rental list after submission
+        rentals = RentalController.GetAllRentals();
+
+        //resets form
+        newRentalInfo = new NewRentalInfo();
+    }
+
+    //avoids complications with newly created rental info and existing rental class
+    private class NewRentalInfo
+    {
+        public int CustomerId { get; set; }
+        public int EquipmentId { get; set; }
+        public DateTime RentalDate { get; set; } = DateTime.Now;
+        public DateTime ReturnDate { get; set; } = DateTime.Now.AddDays(1);
+        public decimal Cost { get; set; }
+    }
+}
