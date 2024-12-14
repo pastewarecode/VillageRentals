@@ -7,14 +7,14 @@
 
 <h3>Rental Management</h3>
 
-<!-- Form that allows a user to add a rental -->
+<!-- Form that allows user to add rental -->
 <EditForm Model="newRentalInfo" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div>
+    <div style="margin-bottom: 8px">
         <label for="customerId">Select Client</label>
-        <InputSelect id="customerId" @bind-Value="newRentalInfo.CustomerId">
+        <InputSelect id="customerId" @bind-Value="newRentalInfo.CustomerId"> 
             <option value="">-- Select Client --</option>
             @foreach (var client in customers)
             {
@@ -22,7 +22,7 @@
             }
         </InputSelect>
     </div>
-    <div>
+    <div style="margin-bottom: 8px">
         <label for="equipmentId">Select Equipment</label>
         <InputSelect id="equipmentId" @bind-Value="newRentalInfo.EquipmentId">
             <option value="">-- Select Equipment --</option>
@@ -32,23 +32,19 @@
             }
         </InputSelect>
     </div>
-    <div>
+    <div style="margin-bottom: 8px">
         <label for="rentalDate">Rental Date</label>
         <InputDate id="rentalDate" @bind-Value="newRentalInfo.RentalDate" />
     </div>
-    <div>
+    <div style="margin-bottom: 8px">
         <label for="returnDate">Return Date</label>
         <InputDate id="returnDate" @bind-Value="newRentalInfo.ReturnDate" />
-    </div>
-    <div>
-        <label for="cost">Cost</label>
-        <InputNumber id="cost" @bind-Value="newRentalInfo.Cost" />
     </div>
 
     <button type="submit">Process Rental</button>
 </EditForm>
 
-<!-- Lists the existing rentals -->
+<!-- Form that displays existing rentals. Cost is calculated from the (daysRented * dailyRate) -->
 <h4>Existing Rentals</h4>
 <ul>
     @foreach (var rental in rentals)
@@ -58,12 +54,11 @@
             Client: @rental.Customer.FirstName @rental.Customer.LastName |
             Equipment: @(rental.rentalItems.FirstOrDefault()?.Item.Name ?? "N/A") |
             Rented On: @(rental.rentalItems.FirstOrDefault()?.RentalDate?.ToShortDateString() ?? "N/A") |
-            Cost: @(rental.rentalItems.FirstOrDefault()?.Cost ?? 0) |
-            Due On: @(rental.rentalItems.FirstOrDefault()?.ReturnDate?.ToShortDateString() ?? "N/A")
+            Due On: @(rental.rentalItems.FirstOrDefault()?.ReturnDate?.ToShortDateString() ?? "N/A") |
+            Cost:$@(rental.rentalItems.FirstOrDefault()?.Cost ?? 0)
         </li>
     }
 </ul>
-
 
 @code {
     private List<Rental> rentals;
@@ -86,23 +81,26 @@
 
         if (customer != null && equipment != null)
         {
-            RentalController.ProcessRental(customer, equipment, newRentalInfo.RentalDate, newRentalInfo.ReturnDate, newRentalInfo.Cost);
+            //calculates the 'totalCost' for days rented from the daily rate that was set for the equipment
+            var daysRented = (newRentalInfo.ReturnDate - newRentalInfo.RentalDate).Days;
+            var totalCost = daysRented * equipment.DailyRate;
+
+            RentalController.ProcessRental(customer, equipment, newRentalInfo.RentalDate, newRentalInfo.ReturnDate, totalCost);
         }
 
-        //prints out the list of rentals with new rentals
+        //returns the list of rentals again to refresh new rentals
         rentals = RentalController.GetAllRentals();
 
         //resets the form after the form is submitted
         newRentalInfo = new NewRentalInfo();
     }
 
-    //avoids issues with newly made 
+    //to avoid complications with the page and newly created rentals
     private class NewRentalInfo
     {
         public int CustomerId { get; set; }
         public int EquipmentId { get; set; }
         public DateTime RentalDate { get; set; } = DateTime.Now;
         public DateTime ReturnDate { get; set; } = DateTime.Now.AddDays(1);
-        public decimal Cost { get; set; }
     }
 }
