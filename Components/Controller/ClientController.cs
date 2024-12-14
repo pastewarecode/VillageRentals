@@ -33,6 +33,7 @@ namespace VillageRentals.Components.Controller
             var json = JsonSerializer.Serialize(customerList);
             File.WriteAllText(filePath, json);
         }
+
         //deserialize data and put it into 'customerList'
         private void LoadClientsFromFile()
         {
@@ -49,8 +50,7 @@ namespace VillageRentals.Components.Controller
             var customer = new Customer(GenerateNewId(), firstName, lastName, phone, email, note);
             customerList.Add(customer);
 
-            //after AddClient is called, we run SaveClientsToFile() to serialize the data into the clients.json
-            SaveClientsToFile();
+            SaveClientsToFile(); //after AddClient is called, we run SaveClientsToFile() to serialize the data into the clients.json
         }
 
         public List<Customer> GetAllClients()

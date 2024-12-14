@@ -13,6 +13,8 @@ namespace VillageRentals.Components.Models
         private DateTime? _returnDate;
         private decimal _cost;
 
+        public RentalItem() { }
+
         public RentalItem(Equipment item, DateTime rentalDate, DateTime? returnDate, decimal cost)
         {
             _item = item;
