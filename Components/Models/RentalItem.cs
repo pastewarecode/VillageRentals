@@ -9,7 +9,7 @@ namespace VillageRentals.Components.Models
     public class RentalItem
     {
         private Equipment _item;
-        private DateTime _rentalDate;
+        private DateTime? _rentalDate;
         private DateTime? _returnDate;
         private decimal _cost;
 
@@ -27,7 +27,7 @@ namespace VillageRentals.Components.Models
             set { _item = value; }
         }
 
-        public DateTime RentalDate
+        public DateTime? RentalDate
         {
             get { return _rentalDate; }
             set { _rentalDate = value; }

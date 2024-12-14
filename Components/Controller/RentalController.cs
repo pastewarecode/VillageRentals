@@ -13,10 +13,12 @@ namespace VillageRentals.Components.Controller
 
         public void ProcessRental(Customer customer, Equipment item, DateTime rentalDate, DateTime returnDate, decimal cost)
         {
+            //create both rental item and the rental
             var rentalItem = new RentalItem(item, rentalDate, returnDate, cost);
             var rental = new Rental(GenerateNewId(), DateTime.Now, customer, returnDate);
 
-
+            //add both into a list
+            rental.rentalItems.Add(rentalItem);
             rentalList.Add(rental);
         }
 
